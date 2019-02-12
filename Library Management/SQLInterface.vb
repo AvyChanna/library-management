@@ -16,7 +16,7 @@ Public Class SQLInterface
 			con.Open()
 			With cmd
 				.Connection = con
-				.CommandText = "SELECT * FROM users WHERE BINARY Username ='" & GLogin.Username & "'"
+				.CommandText = "SELECT * FROM users WHERE BINARY Username ='" & GLogin.Username & "' and confirmed = 'YES'"
 			End With
 			'FILLING THE DATA IN A SPICIFIC TABLE OF THE Library_Management
 			da.SelectCommand = cmd
@@ -182,7 +182,7 @@ Public Class SQLInterface
 			con.Open()
 			With cmd
 				.Connection = con
-				.CommandText = "SELECT * FROM users WHERE BINARY Username ='" & Str & "'"
+				.CommandText = "SELECT * FROM users WHERE BINARY Username ='" & Str & "' and confirmed='YES'"
 			End With
 			'FILLING THE DATA IN A SPICIFIC TABLE OF THE Library_Management
 			da.SelectCommand = cmd
@@ -296,7 +296,7 @@ Public Class SQLInterface
 
 
 			cmd.Connection = con
-			cmd.CommandText = "INSERT INTO users(Name,Username,Pass,Salt,AccType)" & "VALUES ('" & GAdmin.Fullname & "','" & GAdmin.Username & "','" & GAdmin.PasswordHash & "','" & GAdmin.Salt & "','" & GAdmin.AccType & "')"
+			cmd.CommandText = "INSERT INTO users(Name,Username,Pass,Salt,AccType,Confirmed)" & "VALUES ('" & GAdmin.Fullname & "','" & GAdmin.Username & "','" & GAdmin.PasswordHash & "','" & GAdmin.Salt & "','" & GAdmin.AccType & "','YES')"
 
 			'EXECUTE THE DATA
 			result = cmd.ExecuteNonQuery
@@ -373,23 +373,30 @@ Public Class SQLInterface
             da.SelectCommand = cmd
             Dim dt As DataTable = New DataTable
 			da.Fill(dt)
+			con.Close()
+
+			If dt.Rows.Count = 0 Then
+				Alert("Warning", "No Books for given search criteria")
+				Exit Sub
+			End If
 			Dim bs As BindingSource = New BindingSource With {
 				.DataSource = dt
 			}
 			BookList.SearchBookDataGrid.DataSource = bs
-        Catch ex As Exception
+			BookList.Show()
+		Catch ex As Exception
 			Msg.Err("SQL Error6: " + ex.Message)
 		End Try
         con.Close()
     End Sub
 	Public Shared Function GetSysDateTime() As Boolean
 		Dim res As Integer = -1
+		Dim dt As DataTable = New DataTable
 		Try
 			con.Open()
 			cmd.Connection = con
-			cmd.CommandText = "SELECT 1 FROM DUAL"
+            cmd.CommandText = "SELECT date_format(sysdate(), '%e/%c/%Y') FROM DUAL"
 			da.SelectCommand = cmd
-			Dim dt As DataTable = New DataTable
 			da.Fill(dt)
 			res = dt.Rows.Count
 			con.Close()
@@ -397,6 +404,8 @@ Public Class SQLInterface
 			Return False
 		End Try
 		If res = 1 Then
+			servertime = dt.Rows(0).Item(0)
+            clienttime = Now.Day.ToString + "/" + Now.Month.ToString + "/" + Now.Year.ToString 'String.Format("{0:dd/MM/yyyy}", Now().Date.)
 			Return True
 		End If
 		Return False
@@ -411,7 +420,7 @@ Public Class SQLInterface
 			con.Open()
 			With cmd
 				.Connection = con
-				.CommandText = "UPDATE users SET NoOfBooks='" & GLogin.BooksIssued & "', Book1 ='" + GLogin.books(1, 0) + " " + GLogin.books(1, 1) + "', Book2 ='" + GLogin.books(2, 0) + " " & GLogin.books(2, 1) & "', Book3 ='" + GLogin.books(3, 0) + " " & GLogin.books(3, 1) & "',Book4 ='" + GLogin.books(4, 0) + " " & GLogin.books(4, 1) & "',Book5 ='" + GLogin.books(5, 0) + " " & GLogin.books(5, 1) & "',Book6 = '" + GLogin.books(6, 0) + " " & GLogin.books(6, 1) & "',Book7 ='" + GLogin.books(7, 0) + " " & GLogin.books(7, 1) & "',Book8 ='" + GLogin.books(8, 0) + " " & GLogin.books(8, 1) & "',Book9 ='" + GLogin.books(9, 0) + " " & GLogin.books(9, 1) & "',Book10 ='" + GLogin.books(10, 0) + " " & GLogin.books(10, 1) & "' WHERE BINARY Username='" + GLogin.Username + "'"
+				.CommandText = "UPDATE users Set NoOfBooks='" & GLogin.BooksIssued & "', Book1 ='" + GLogin.books(1, 0) + " " + GLogin.books(1, 1) + "', Book2 ='" + GLogin.books(2, 0) + " " & GLogin.books(2, 1) & "', Book3 ='" + GLogin.books(3, 0) + " " & GLogin.books(3, 1) & "',Book4 ='" + GLogin.books(4, 0) + " " & GLogin.books(4, 1) & "',Book5 ='" + GLogin.books(5, 0) + " " & GLogin.books(5, 1) & "',Book6 = '" + GLogin.books(6, 0) + " " & GLogin.books(6, 1) & "',Book7 ='" + GLogin.books(7, 0) + " " & GLogin.books(7, 1) & "',Book8 ='" + GLogin.books(8, 0) + " " & GLogin.books(8, 1) & "',Book9 ='" + GLogin.books(9, 0) + " " & GLogin.books(9, 1) & "',Book10 ='" + GLogin.books(10, 0) + " " & GLogin.books(10, 1) & "' WHERE BINARY Username='" + GLogin.Username + "'"
 			End With
 
 			result = cmd.ExecuteNonQuery
@@ -594,11 +603,13 @@ Public Class SQLInterface
         If NewFullname <> "" Then
             str = str + ", Name = '" + NewFullname + "' "
         End If
-        If NewPassword <> "" Then
-            str = str + ", Pass= '" + NewPassword + "', Salt = '" + GAdmin.Salt + "' "
-        End If
-        str = str + ", AccType= '" + acctype + "' "
-        str = str + "where Username = '" + OldUsername + "'"
+		If NewPassword <> "" Then
+			str = str + ", Pass= '" + NewPassword + "', Salt = '" + GAdmin.Salt + "' "
+		End If
+		If acctype.Trim <> "" Then
+			str = str + ", AccType= '" + acctype + "' "
+		End If
+		str = str + "where Username = '" + OldUsername + "'"
         Dim result As Integer = -1
         Try
             con.Open()
@@ -619,57 +630,55 @@ Public Class SQLInterface
         End If
 
     End Function
-    Public Shared Function AdminEditBook(ByVal id As String, ByVal isbn As String, ByVal name As String, ByVal author As String, ByVal genre As String, ByVal copies As String, ByVal left As String) As Boolean
-        Dim str As String = "UPDATE books SET ID = '" + id + "' "
-        If isbn <> "" Then
-            str = str + ", ISBN = '" + isbn + "' "
-        End If
-        If name <> "" Then
-            str = str + ", Name= '" + name + "' "
-        End If
-        If author <> "" Then
-            str = str + ", Author= '" + author + "' "
-        End If
-        If genre <> "" Then
-            str = str + ", Genre= '" + genre + "' "
-        End If
-        If genre <> "" Then
-            str = str + ", Genre= '" + genre + "' "
-        End If
-        If copies <> "" Then
-            str = str + ", Copies= '" + copies + "' "
-            str = str + ", `Left`= '" + left + "' "
-        End If
-        str = str + " where ID = '" + id.ToString + "'"
-        Dim result As Integer = -1
-        Try
-            con.Open()
-            With cmd
-                .Connection = con
-                .CommandText = str
-            End With
-            result = cmd.ExecuteNonQuery
-            con.Close()
-        Catch ex As MySqlException
-            Msg.Err("SQL Error4: " + ex.Message)
-            Return False
-        End Try
-        If result = 1 Then
-            Return True
-        Else
-            Return False
-        End If
-
-
-    End Function
-    Public Shared Function BooksCopiesMinusLeft(ByVal id As String) As Integer
+	Public Shared Function AdminEditBook(ByVal id As String, ByVal isbn As String, ByVal name As String, ByVal author As String, ByVal genre As String, ByVal copies As String, ByVal left As String) As Boolean
+		Dim str As String = "UPDATE books SET ID = '" + id + "' "
+		If isbn <> "" Then
+			str = str + ", ISBN = '" + isbn + "' "
+		End If
+		If name <> "" Then
+			str = str + ", Name= '" + name + "' "
+		End If
+		If author <> "" Then
+			str = str + ", Author= '" + author + "' "
+		End If
+		If genre <> "" Then
+			str = str + ", Genre= '" + genre + "' "
+		End If
+		If genre <> "" Then
+			str = str + ", Genre= '" + genre + "' "
+		End If
+		If copies <> "" Then
+			str = str + ", Copies= '" + copies + "' "
+			str = str + ", `Left`= '" + left + "' "
+		End If
+		str = str + " where ID = '" + id.ToString + "'"
+		Dim result As Integer = -1
+		Try
+			con.Open()
+			With cmd
+				.Connection = con
+				.CommandText = str
+			End With
+			result = cmd.ExecuteNonQuery
+			con.Close()
+		Catch ex As MySqlException
+			Msg.Err("SQL Error4: " + ex.Message)
+			Return False
+		End Try
+		If result = 1 Then
+			Return True
+		Else
+			Return False
+		End If
+	End Function
+	Public Shared Function BooksCopiesMinusLeft(ByVal id As String) As Integer
         Dim Res As Integer = 0
         Try
             con.Open()
             With cmd
                 .Connection = con
-                .CommandText = "SELECT Copies, `Left` FROM books"
-            End With
+				.CommandText = "SELECT Copies, `Left` FROM books where ID ='" + id + "'"
+			End With
             'FILLING THE DATA IN A SPICIFIC TABLE OF THE Library_Management
             da.SelectCommand = cmd
             Dim dt As DataTable = New DataTable
@@ -688,8 +697,8 @@ Public Class SQLInterface
             con.Open()
             With cmd
                 .Connection = con
-                .CommandText = "SELECT username,name,acctype as 'promote to' FROM users where confirmed = 'NO'"
-            End With
+				.CommandText = "SELECT Username,Name,AccType as 'Promote To' FROM users where confirmed = 'NO'"
+			End With
             'FILLING THE DATA IN A SPICIFIC TABLE OF THE Library_Management
             da.SelectCommand = cmd
             Dim dt As DataTable = New DataTable
@@ -711,8 +720,8 @@ Public Class SQLInterface
             con.Open()
             With cmd
                 .Connection = con
-                .CommandText = "UPDATE users SET confirmed = 'YES' where username = '" & username & "'"
-            End With
+				.CommandText = "UPDATE users SET confirmed = 'YES' where BINARY Username = '" & username & "'"
+			End With
 
             result = cmd.ExecuteNonQuery
             Alert("Success", "User is approved !")
@@ -756,6 +765,31 @@ Public Class SQLInterface
 
         End Try
     End Sub
+	Public Shared Function ClearDue(ByVal username As String) As Boolean
+		Dim result As Integer = -1
 
+		Try
+			con.Open()
+			With cmd
+				.Connection = con
+				.CommandText = "UPDATE users set Due = 0 where username = '" & username & "'"
+			End With
+
+			result = cmd.ExecuteNonQuery
+			con.Close()
+
+
+			'FILLING THE DATA IN A SPICIFIC TABLE OF THE Library_Management
+
+		Catch ex As MySqlException
+			Msg.Err("SQL Error4: " + ex.Message)
+			Return False
+		End Try
+		If result = 1 Then
+			Return True
+		Else
+			Return False
+		End If
+	End Function
 
 End Class
