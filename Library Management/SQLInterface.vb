@@ -765,7 +765,38 @@ Public Class SQLInterface
 
         End Try
     End Sub
-	Public Shared Function ClearDue(ByVal username As String) As Boolean
+
+    Public Shared Sub UpdateDueinTable(ByVal username As String)
+
+
+        Dim result As Integer = -1
+
+        Try
+            con.Open()
+            With cmd
+                .Connection = con
+                .CommandText = "UPDATE users set Due = '" & GLogin.Due & "' where username = '" & username & "'"
+            End With
+
+
+            result = cmd.ExecuteNonQuery
+            con.Close()
+
+
+            'FILLING THE DATA IN A SPICIFIC TABLE OF THE Library_Management
+
+        Catch ex As MySqlException
+            Msg.Err("SQL Error4: " + ex.Message)
+
+        End Try
+        If result = 1 Then
+
+        Else
+
+        End If
+        End Sub
+
+    Public Shared Function ClearDue(ByVal username As String) As Boolean
 		Dim result As Integer = -1
 
 		Try
@@ -791,24 +822,26 @@ Public Class SQLInterface
 			Return False
 		End If
 	End Function
-	Public Shared Sub PopulateUsersList()
-		Try
-			con.Open()
-			With cmd
-				.Connection = con
-				.CommandText = "SELECT Username,Name as 'Fullname' ,AccType as 'Account Type', NoOfBooks as 'Books Issued' ,Due FROM users where ( confirmed = 'Yes' and username <> '" + GLogin.Username + "')"
-			End With
-			'FILLING THE DATA IN A SPICIFIC TABLE OF THE Library_Management
-			da.SelectCommand = cmd
-			Dim dt As DataTable = New DataTable
-			da.Fill(dt)
-			Dim bs As BindingSource = New BindingSource With {
-				.DataSource = dt
-			}
-			AAAAMainForm.UserListDataGrid.DataSource = bs
-		Catch ex As Exception
-			Msg.Err("SQL Error6: " + ex.Message)
-		End Try
-		con.Close()
-	End Sub
+    Public Shared Sub PopulateUsersList()
+        Try
+            con.Open()
+            With cmd
+                .Connection = con
+                .CommandText = "SELECT Username,Name as 'Fullname' ,AccType as 'Account Type', NoOfBooks as 'Books Issued' ,Due FROM users where ( confirmed = 'Yes' and username <> '" + GLogin.Username + "')"
+            End With
+            'FILLING THE DATA IN A SPICIFIC TABLE OF THE Library_Management
+            da.SelectCommand = cmd
+            Dim dt As DataTable = New DataTable
+            da.Fill(dt)
+            Dim bs As BindingSource = New BindingSource With {
+                .DataSource = dt
+            }
+            AAAAMainForm.UserListDataGrid.DataSource = bs
+        Catch ex As Exception
+            Msg.Err("SQL Error6: " + ex.Message)
+        End Try
+        con.Close()
+    End Sub
+
+
 End Class

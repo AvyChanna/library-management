@@ -5,8 +5,9 @@
 	Public Shared PasswordHash As String = ""
 	Public Shared AccType As String = ""
 	Public Shared UnhashedPassword As String = ""
-	Public Shared Due As Integer = 0
-	Public Shared BooksIssued As Integer = 0
+    Public Shared Due As Integer = 0
+    Public Shared currentdue As Integer = 0
+    Public Shared BooksIssued As Integer = 0
 	Public Shared lib_id As Integer = 0
 	Public Shared LoggedIn As Boolean = False
 	Public Shared Salt As String = ""

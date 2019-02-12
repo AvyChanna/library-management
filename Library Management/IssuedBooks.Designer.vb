@@ -33,10 +33,10 @@ Partial Class IssuedBooks
         Me.IssuedBookDataGrid = New System.Windows.Forms.DataGridView()
         Me.IssuedBooksContextMenu = New Library_Management.MyContextMenuStrip()
         Me.IssueSelectedBookToolStrip = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RenewSelectedBookToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CopyBookNameToolStrip = New System.Windows.Forms.ToolStripMenuItem()
         Me.CopyISBNNumberToolStrip = New System.Windows.Forms.ToolStripMenuItem()
         Me.CopyBookIDToolStrip = New System.Windows.Forms.ToolStripMenuItem()
-        Me.RenewSelectedBookToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.FormSkin1.SuspendLayout()
         CType(Me.IssuedBookDataGrid, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.IssuedBooksContextMenu.SuspendLayout()
@@ -51,7 +51,7 @@ Partial Class IssuedBooks
         Me.FormSkin1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.FormSkin1.Font = New System.Drawing.Font("Segoe UI", 12.0!)
         Me.FormSkin1.Location = New System.Drawing.Point(0, 0)
-        Me.FormSkin1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.FormSkin1.Margin = New System.Windows.Forms.Padding(4)
         Me.FormSkin1.Name = "FormSkin1"
         Me.FormSkin1.Size = New System.Drawing.Size(1200, 675)
         Me.FormSkin1.TabIndex = 0
@@ -63,7 +63,7 @@ Partial Class IssuedBooks
         Me.MyMini1.BackColor = System.Drawing.Color.White
         Me.MyMini1.Font = New System.Drawing.Font("Marlett", 12.0!)
         Me.MyMini1.Location = New System.Drawing.Point(1119, 18)
-        Me.MyMini1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.MyMini1.Margin = New System.Windows.Forms.Padding(4)
         Me.MyMini1.Name = "MyMini1"
         Me.MyMini1.Size = New System.Drawing.Size(18, 18)
         Me.MyMini1.TabIndex = 5
@@ -75,7 +75,7 @@ Partial Class IssuedBooks
         Me.MyClose1.BackColor = System.Drawing.Color.White
         Me.MyClose1.Font = New System.Drawing.Font("Marlett", 10.0!)
         Me.MyClose1.Location = New System.Drawing.Point(1155, 18)
-        Me.MyClose1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.MyClose1.Margin = New System.Windows.Forms.Padding(4)
         Me.MyClose1.Name = "MyClose1"
         Me.MyClose1.Size = New System.Drawing.Size(18, 18)
         Me.MyClose1.TabIndex = 4
@@ -120,7 +120,7 @@ Partial Class IssuedBooks
         Me.IssuedBookDataGrid.DefaultCellStyle = DataGridViewCellStyle3
         Me.IssuedBookDataGrid.GridColor = System.Drawing.Color.FromArgb(CType(CType(127, Byte), Integer), CType(CType(127, Byte), Integer), CType(CType(127, Byte), Integer))
         Me.IssuedBookDataGrid.Location = New System.Drawing.Point(0, 76)
-        Me.IssuedBookDataGrid.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.IssuedBookDataGrid.Margin = New System.Windows.Forms.Padding(4)
         Me.IssuedBookDataGrid.Name = "IssuedBookDataGrid"
         DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
         DataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(CType(CType(60, Byte), Integer), CType(CType(70, Byte), Integer), CType(CType(73, Byte), Integer))
@@ -164,37 +164,37 @@ Partial Class IssuedBooks
         Me.IssuedBooksContextMenu.Name = "BrowseBooksContextMenu"
         Me.IssuedBooksContextMenu.ShowCheckMargin = True
         Me.IssuedBooksContextMenu.ShowImageMargin = False
-        Me.IssuedBooksContextMenu.Size = New System.Drawing.Size(241, 167)
+        Me.IssuedBooksContextMenu.Size = New System.Drawing.Size(229, 134)
         '
         'IssueSelectedBookToolStrip
         '
         Me.IssueSelectedBookToolStrip.Name = "IssueSelectedBookToolStrip"
-        Me.IssueSelectedBookToolStrip.Size = New System.Drawing.Size(240, 26)
+        Me.IssueSelectedBookToolStrip.Size = New System.Drawing.Size(228, 26)
         Me.IssueSelectedBookToolStrip.Text = "Return Selected Book"
+        '
+        'RenewSelectedBookToolStripMenuItem
+        '
+        Me.RenewSelectedBookToolStripMenuItem.Name = "RenewSelectedBookToolStripMenuItem"
+        Me.RenewSelectedBookToolStripMenuItem.Size = New System.Drawing.Size(228, 26)
+        Me.RenewSelectedBookToolStripMenuItem.Text = "Renew Selected Book"
         '
         'CopyBookNameToolStrip
         '
         Me.CopyBookNameToolStrip.Name = "CopyBookNameToolStrip"
-        Me.CopyBookNameToolStrip.Size = New System.Drawing.Size(240, 26)
+        Me.CopyBookNameToolStrip.Size = New System.Drawing.Size(228, 26)
         Me.CopyBookNameToolStrip.Text = "Copy Book Name"
         '
         'CopyISBNNumberToolStrip
         '
         Me.CopyISBNNumberToolStrip.Name = "CopyISBNNumberToolStrip"
-        Me.CopyISBNNumberToolStrip.Size = New System.Drawing.Size(240, 26)
+        Me.CopyISBNNumberToolStrip.Size = New System.Drawing.Size(228, 26)
         Me.CopyISBNNumberToolStrip.Text = "Copy ISBN Number"
         '
         'CopyBookIDToolStrip
         '
         Me.CopyBookIDToolStrip.Name = "CopyBookIDToolStrip"
-        Me.CopyBookIDToolStrip.Size = New System.Drawing.Size(240, 26)
+        Me.CopyBookIDToolStrip.Size = New System.Drawing.Size(228, 26)
         Me.CopyBookIDToolStrip.Text = "Copy Book ID"
-        '
-        'RenewSelectedBookToolStripMenuItem
-        '
-        Me.RenewSelectedBookToolStripMenuItem.Name = "RenewSelectedBookToolStripMenuItem"
-        Me.RenewSelectedBookToolStripMenuItem.Size = New System.Drawing.Size(240, 26)
-        Me.RenewSelectedBookToolStripMenuItem.Text = "Renew Selected Book"
         '
         'IssuedBooks
         '
@@ -203,7 +203,7 @@ Partial Class IssuedBooks
         Me.ClientSize = New System.Drawing.Size(1200, 675)
         Me.Controls.Add(Me.FormSkin1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
-        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "IssuedBooks"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "IssuedBooks"

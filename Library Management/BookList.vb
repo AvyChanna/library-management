@@ -46,5 +46,16 @@
         End If
     End Sub
 
+    Private Sub SearchBookDataGrid_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles SearchBookDataGrid.CellContentClick
 
+    End Sub
+
+    Private Sub SearchBookDataGrid_DoubleClick(sender As Object, e As EventArgs) Handles SearchBookDataGrid.DoubleClick
+
+    End Sub
+
+    Private Sub SearchBookDataGrid_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles SearchBookDataGrid.CellContentDoubleClick
+        ShowBookInfo.ShowBook(SearchBookDataGrid.Rows(e.RowIndex).Cells(0).ToString)
+
+    End Sub
 End Class
