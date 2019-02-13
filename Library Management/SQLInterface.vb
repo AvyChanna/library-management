@@ -321,7 +321,6 @@ Public Class SQLInterface
 			'HOLDS THE DATA TO BE EXECUTED
 			cmd.Connection = con
 			cmd.CommandText = "INSERT INTO books(Name,Author,ISBN,Genre,Copies,`Left`) " & "VALUES ('" & Name & "','" & Author & "','" & ISBN & "','" & Genre & "'," & copies & "," + copies + ")"
-			'Console.WriteLine(cmd.CommandText)
 			'EXECUTE THE DATA
 			result = cmd.ExecuteNonQuery
 			'CHECKING IF THE DATA HAS BEEN EXECUTED OR NOT
@@ -502,7 +501,6 @@ Public Class SQLInterface
 				.Connection = con
 				.CommandText = "UPDATE users SET Due = " + GLogin.Due.ToString + ",NoOfBooks='" & GLogin.BooksIssued & "', Book1 ='" + GLogin.books(1, 0) + " " + GLogin.books(1, 1) + "', Book2 ='" + GLogin.books(2, 0) + " " & GLogin.books(2, 1) & "', Book3 ='" + GLogin.books(3, 0) + " " & GLogin.books(3, 1) & "',Book4 ='" + GLogin.books(4, 0) + " " & GLogin.books(4, 1) & "',Book5 ='" + GLogin.books(5, 0) + " " & GLogin.books(5, 1) & "',Book6 = '" + GLogin.books(6, 0) + " " & GLogin.books(6, 1) & "',Book7 ='" + GLogin.books(7, 0) + " " & GLogin.books(7, 1) & "',Book8 ='" + GLogin.books(8, 0) + " " & GLogin.books(8, 1) & "',Book9 ='" + GLogin.books(9, 0) + " " & GLogin.books(9, 1) & "',Book10 ='" + GLogin.books(10, 0) + " " & GLogin.books(10, 1) & "' WHERE BINARY Username='" + GLogin.Username + "'"
 				'.CommandText = "UPDATE users SET Due = " + GLogin.Due + ", NoOfBooks=" + GLogin.BooksIssued + ", Book1 ='" + GLogin.books(1, 0) + " " + GLogin.books(1, 1) + "', Book2 ='" + GLogin.books(2, 0) + " " + GLogin.books(2, 1) + "', Book3 ='" + GLogin.books(3, 0) + " " + GLogin.books(3, 1) + "', Book4 ='" + GLogin.books(4, 0) + " " + GLogin.books(4, 1) + "', Book5 ='" + GLogin.books(5, 0) + " " + GLogin.books(5, 1) + "', Book6 ='" + GLogin.books(6, 0) + " " + GLogin.books(6, 1) + "', Book7 ='" + GLogin.books(7, 0) + " " + GLogin.books(7, 1) + "', Book8 ='" + GLogin.books(8, 0) + " " + GLogin.books(8, 1) + "', Book9 ='" + GLogin.books(9, 0) + " " + GLogin.books(9, 1) + "', Book10='" + GLogin.books(10, 0) + " " + GLogin.books(10, 1) + "' WHERE Username='" + GLogin.Username + "'"
-				Console.WriteLine(cmd.CommandText)
 			End With
 			result = cmd.ExecuteNonQuery
 			con.Close()
@@ -765,7 +763,6 @@ Public Class SQLInterface
 
         End Try
     End Sub
-
     Public Shared Sub UpdateDueinTable(ByVal username As String)
 
 
@@ -795,8 +792,7 @@ Public Class SQLInterface
 
         End If
         End Sub
-
-    Public Shared Function ClearDue(ByVal username As String) As Boolean
+	Public Shared Function ClearDue(ByVal username As String) As Boolean
 		Dim result As Integer = -1
 
 		Try
@@ -822,26 +818,47 @@ Public Class SQLInterface
 			Return False
 		End If
 	End Function
-    Public Shared Sub PopulateUsersList()
-        Try
-            con.Open()
-            With cmd
-                .Connection = con
-                .CommandText = "SELECT Username,Name as 'Fullname' ,AccType as 'Account Type', NoOfBooks as 'Books Issued' ,Due FROM users where ( confirmed = 'Yes' and username <> '" + GLogin.Username + "')"
-            End With
-            'FILLING THE DATA IN A SPICIFIC TABLE OF THE Library_Management
-            da.SelectCommand = cmd
-            Dim dt As DataTable = New DataTable
-            da.Fill(dt)
-            Dim bs As BindingSource = New BindingSource With {
-                .DataSource = dt
-            }
-            AAAAMainForm.UserListDataGrid.DataSource = bs
-        Catch ex As Exception
-            Msg.Err("SQL Error6: " + ex.Message)
-        End Try
-        con.Close()
-    End Sub
-
-
+	Public Shared Sub PopulateUsersList()
+		Try
+			con.Open()
+			With cmd
+				.Connection = con
+				.CommandText = "SELECT Username,Name as 'Fullname' ,AccType as 'Account Type', NoOfBooks as 'Books Issued' ,Due FROM users where ( confirmed = 'Yes' and username <> '" + GLogin.Username + "')"
+			End With
+			'FILLING THE DATA IN A SPICIFIC TABLE OF THE Library_Management
+			da.SelectCommand = cmd
+			Dim dt As DataTable = New DataTable
+			da.Fill(dt)
+			Dim bs As BindingSource = New BindingSource With {
+				.DataSource = dt
+			}
+			AAAAMainForm.UserListDataGrid.DataSource = bs
+		Catch ex As Exception
+			Msg.Err("SQL Error6: " + ex.Message)
+		End Try
+		con.Close()
+	End Sub
+	Public Shared Sub GetBookInfo(ByVal id As String)
+		Dim Res As Integer = 0
+		Try
+			con.Open()
+			With cmd
+				.Connection = con
+				.CommandText = "SELECT ID,Name,Author,ISBN,Genre,`Left` FROM books where ID ='" + id + "'"
+			End With
+			'FILLING THE DATA
+			da.SelectCommand = cmd
+			Dim dt As DataTable = New DataTable
+			da.Fill(dt)
+			con.Close()
+			ShowBookInfo.BookID.Text = dt.Rows(0).Item(0)
+			ShowBookInfo.BookName.Text = dt.Rows(0).Item(1)
+			ShowBookInfo.BookAuthor.Text = dt.Rows(0).Item(2)
+			ShowBookInfo.BookISBN.Text = dt.Rows(0).Item(3)
+			ShowBookInfo.Genre.Text = dt.Rows(0).Item(4)
+			ShowBookInfo.CopiesLeft.Text = dt.Rows(0).Item(5)
+		Catch ex As Exception
+			Msg.Err("SQL Error6: " + ex.Message)
+		End Try
+	End Sub
 End Class
