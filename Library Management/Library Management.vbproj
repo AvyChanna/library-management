@@ -50,6 +50,9 @@
   <PropertyGroup>
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>logo_small_word.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="MySql.Data, Version=8.0.15.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
     <Reference Include="System" />
@@ -85,6 +88,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Alert.vb" />
+    <Compile Include="ApplicationEvents.vb" />
     <Compile Include="bookissuescript.vb" />
     <Compile Include="BookList.Designer.vb">
       <DependentUpon>BookList.vb</DependentUpon>
@@ -183,6 +187,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="References\show.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="logo_small_word.ico" />
+    <None Include="References\logo_small_word.ico" />
+    <None Include="References\logo_medium.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

@@ -563,6 +563,10 @@ Public Class AAAAMainForm
 			Alert("Error", "Edit Profile Failed")
 			Exit Sub
 		End If
+		If SummaryUsernameTextBox.Text <> "" Then
+			My.Settings.savedusername = SummaryUsernameTextBox.Text
+			My.Settings.Save()
+		End If
 		StatusBar.Text = "Logged in as " + GLogin.Fullname + "(" + GLogin.AccType + ")"
 		Alert("Success", "Profile Edited Successfully")
 		MyTextBox3.Text = GLogin.Fullname
@@ -591,6 +595,8 @@ Public Class AAAAMainForm
 		If GLogin.TempHash = Encrypt_Sha512(GLogin.Salt + Encrypt_Sha512(SummaryOldPasswordTextbox.Text) + "d5eba9b008f69bd56e") Then
 			GLogin.PasswordHash = SHA512.EncryptNewPassword(Encrypt_Sha512(SummaryNewPasswordTextBox.Text))
 			If SQLInterface.ChangePassword() = True Then
+				My.Settings.savedpassword = SummaryNewPasswordTextBox.Text
+				My.Settings.Save()
 				Alert("Success", "password changed successfully")
 			Else
 				Alert("Error", "error changing password")
